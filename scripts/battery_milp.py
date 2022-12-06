@@ -217,7 +217,7 @@ class BatteryMILP:
         model.Batt_char_dis = Constraint(model.T, rule=Batt_char_dis)
 
         # declare molde solver and solve
-        sol = SolverFactory("glpk")
+        sol = SolverFactory("cbc")
         sol.solve(model)
 
         return model
@@ -227,7 +227,7 @@ class BatteryMILP:
         return remaining_cap
 
 
-price_data = pd.read_csv("../data/N2EX_UK_DA_Auction_Hourly_Prices_2019_test.csv")
+price_data = pd.read_csv("/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/N2EX_UK_DA_Auction_Hourly_Prices_2019_test.csv")
 
 # declare battery config
 battery_power = 10
