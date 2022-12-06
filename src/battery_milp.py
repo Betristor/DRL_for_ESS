@@ -29,7 +29,7 @@ class BatteryMILP:
         self.pwr = battery_power
 
         self.previous_cap = 100
-        self.batt_cost = 75000  # £/MWh
+        self.batt_cost = 180000  # $/MWh
 
     def optimise(
         self,
@@ -55,7 +55,7 @@ class BatteryMILP:
         model.T = RangeSet(0, len(price_df.price.tolist()) - 1)
         model.pwr = Param(initialize=self.pwr, doc="power rating of battery (MW)")
         model.cap = Param(initialize=self.cap, doc="capacity rating of battery (MWh)")
-        model.price = Param(model.T, initialize=prices, doc="hourly price (£/MWh)")
+        model.price = Param(model.T, initialize=prices, doc="hourly price ($/MWh)")
 
         # set charge and discharge varaibles
         model.energy_in = Var(model.T, domain=NonNegativeReals, initialize=0)
@@ -227,11 +227,11 @@ class BatteryMILP:
         return remaining_cap
 
 
-price_data = pd.read_csv("/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/N2EX_UK_DA_Auction_Hourly_Prices_2019_test.csv")
+price_data = pd.read_csv("/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/PGF1_2_PDRP88-APND_prices.csv")
 
 # declare battery config
-battery_power = 10
-battery_capacity = 20
+battery_power = 10 # MW
+battery_capacity = 20 # MWh
 
 # declare intial soc
 soc = 0.5 * battery_capacity
@@ -291,7 +291,7 @@ for day_idx in range(0, len(price_data), 168):
 df["cumlative_profit"] = df["profit_timeseries"].cumsum()
 
 # save profits for runtime duration (for comparison with DQN models)
-df.to_csv("../results/timeseries_results_MILP.csv")
+df.to_csv("results/timeseries_results_MILP.csv")
 
 plt.plot(df["cumlative_profit"].values)
 plt.show()
