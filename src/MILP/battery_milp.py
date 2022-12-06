@@ -14,10 +14,9 @@ from pyomo.environ import (
     SolverFactory
 )
 import matplotlib.pyplot as plt
-import math
 
-from battery_efficiency import BatteryEfficiency
-from battery_degradation_func import calculate_degradation
+from battery.battery_efficiency import BatteryEfficiency
+from battery.battery_degradation import calculate_degradation
 import itertools
 
 
