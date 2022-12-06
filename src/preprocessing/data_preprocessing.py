@@ -145,9 +145,3 @@ with open(f"../../data/processed_data/train_data_336hr_in_24hr_out_unshuffled.pk
 
 with open("../../data/processed_data/test_data_336hr_in_24hr_out_unshuffled.pkl", "wb") as testset:
 	dump(test_data, testset)
-
-
-
-
-
-
