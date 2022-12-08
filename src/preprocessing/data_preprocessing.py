@@ -5,36 +5,36 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from pickle import dump, load
 
-from workalendar.europe import UnitedKingdom
-cal = UnitedKingdom()
+from workalendar.usa.california import California
+cal = California()
 
 
 # create train and test set data
-n2ex_da = pd.read_csv('../../data/N2EX_UK_DA_Auction_Hourly_Prices_pytorch_train.csv', header=0)
+n2ex_da = pd.read_csv('/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/PGF1_2_PDRP88-APND_prices.csv', header=0)
 
 # convert series to datetime
-n2ex_da['utc_timestamp'] = pd.to_datetime(n2ex_da['utc_timestamp'],format='%d/%m/%Y %H:%M')
+n2ex_da['utc_timestamp'] = pd.to_datetime(n2ex_da['utc_timestamp'],format='%Y/%m/%d %H:%M')
 
 # train / test reference
-data_ref = 'test'
+data_ref = 'train'
 
 # save scaler for inverse transform
 if data_ref == "train":
 
 	# normalise the price
 	scaler = MinMaxScaler()
-	n2ex_da[['Price_(£)']] = scaler.fit_transform(n2ex_da[['Price_(£)']])
+	n2ex_da[['price']] = scaler.fit_transform(n2ex_da[['price']])
 
-	with open(f"../../data/processed_data/da_price_scaler.pkl", "wb") as scaler_store:
+	with open("/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/da_price_scaler.pkl", "wb") as scaler_store:
 		dump(scaler, scaler_store)
 
 else: # load scaler
 
 	scaler = load(open(f'../../data/processed_data/da_price_scaler.pkl', 'rb'))
-	n2ex_da[['Price_(£)']] = scaler.fit_transform(n2ex_da[['Price_(£)']])
+	n2ex_da[['price']] = scaler.fit_transform(n2ex_da[['price']])
 
 # ts_df = pd.concat(days_df)
-ts = n2ex_da['Price_(£)']
+ts = n2ex_da['price']
 ts = np.expand_dims(ts.values, axis=-1)
 
 dates = n2ex_da['utc_timestamp'].values
@@ -140,7 +140,7 @@ train_data, test_data = input_output(ts[2:], times_data[2:], dates[2:], input_se
 
 
 # save data
-with open(f"../../data/processed_data/train_data_336hr_in_24hr_out_unshuffled.pkl", "wb") as trainset:
+with open("/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/train_data.pkl", "wb") as trainset:
 	dump(train_data, trainset)
 
 with open("../../data/processed_data/test_data_336hr_in_24hr_out_unshuffled.pkl", "wb") as testset:

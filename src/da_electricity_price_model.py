@@ -36,11 +36,11 @@ class LSTMCNNModel(nn.Module):
 def main():
 
 	#load training data dictionary
-	train_set_load = open("/data/processed_data/train_data_336hr_in_24hr_out_2018_2019.pkl", "rb") 
+	train_set_load = open("/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/train_data.pkl", "rb") 
 	train_set = load(train_set_load)
 	train_set_load.close()
 
-
+	print(len(train_set))
 	# import data
 	inputs = np.moveaxis(train_set['X_train'], -1, 1)
 	y_true = train_set['y_train']
@@ -84,19 +84,24 @@ def main():
 
 
 	# save trained model
-	PATH = '/models/da_price_prediction_2018.pt'
+	PATH = './models/da_price_prediction.pt'
 	torch.save(model.state_dict(), PATH)
 
 	model.eval()
 	with torch.no_grad():
-		a = model(torch.unsqueeze(inputs[500].float(),0))
+		a = model(torch.unsqueeze(inputs[2].float(),0))
 		a = a.numpy()
 		a = np.squeeze(a, axis=-1)
 
 	print(a.shape)
-	print(y_true[500].shape)
+	print(y_true[2].shape)
+	plt.title("Electricity price prediction")
 	plt.plot(np.squeeze(a), label="pred")
-	plt.plot(np.squeeze(y_true[500]), label="true")
+	plt.plot(np.squeeze(y_true[2]), label="true")
+	plt.xticks(ticks=range(24),labels=range(1, 25))
+	plt.xlabel("Hour", loc="right")
+	plt.ylabel("Price")
+	plt.legend()
 	plt.show()
 
 	# inference model
