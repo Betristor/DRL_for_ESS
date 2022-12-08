@@ -16,7 +16,7 @@ n2ex_da = pd.read_csv('/Users/yuhengzhang/Documents/博一上/Foundations of RL/
 n2ex_da['utc_timestamp'] = pd.to_datetime(n2ex_da['utc_timestamp'],format='%Y/%m/%d %H:%M')
 
 # train / test reference
-data_ref = 'train'
+data_ref = 'test'
 
 # save scaler for inverse transform
 if data_ref == "train":
@@ -30,7 +30,7 @@ if data_ref == "train":
 
 else: # load scaler
 
-	scaler = load(open(f'../../data/processed_data/da_price_scaler.pkl', 'rb'))
+	scaler = load(open('./data/processed_data/da_price_scaler.pkl', 'rb'))
 	n2ex_da[['price']] = scaler.fit_transform(n2ex_da[['price']])
 
 # ts_df = pd.concat(days_df)
@@ -143,5 +143,5 @@ train_data, test_data = input_output(ts[2:], times_data[2:], dates[2:], input_se
 with open("/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/train_data.pkl", "wb") as trainset:
 	dump(train_data, trainset)
 
-with open("../../data/processed_data/test_data_336hr_in_24hr_out_unshuffled.pkl", "wb") as testset:
+with open("./data/processed_data/test_data.pkl", "wb") as testset:
 	dump(test_data, testset)

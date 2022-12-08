@@ -11,12 +11,12 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 # import custom classes:
-from battery.battery_efficiency import BatteryEfficiency
-from battery.battery_degradation import calculate_degradation
+from src.battery.battery_efficiency import BatteryEfficiency
+from src.battery.battery_degradation import calculate_degradation
 
 # import model architecture from model scripts directory
 sys.path.append('../models') 
-from da_electricity_price_model import LSTMCNNModel
+from src.da_electricity_price_model import LSTMCNNModel
 
 # create ESS environment
 class Battery(gym.Env):
@@ -54,7 +54,7 @@ class Battery(gym.Env):
 		self.game_over = False
 		self.idx_ref = 1
 		self.bug = False
-		self.true_prices = pd.read_csv('../data/N2EX_UK_DA_Auction_Hourly_Prices_2018_train.csv').iloc[:,-1]
+		self.true_prices = pd.read_csv('/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/PGF1_2_PDRP88-APND_prices.csv').iloc[:,-1]
 		self.price_track = env_settings['price_track']
 		self.cycle_num = 0
 		self.ep_start_kWh_remain = self.cr
@@ -90,9 +90,9 @@ class Battery(gym.Env):
 
 		# load DA Price Predictor Pytorch Model
 		if os.path.isfile(self.torch_file):
-			self.model = LSTMCNNModel().cuda()
-			self.model.load_state_dict(torch.load(self.torch_file, map_location=torch.device('cuda:0')))
-			self.model = self.model.cuda()
+			self.model = LSTMCNNModel()
+			self.model.load_state_dict(torch.load(self.torch_file))
+			self.model = self.model
 			self.model.eval()
 		else:
 			print('Pytorch model not found')
@@ -114,10 +114,6 @@ class Battery(gym.Env):
 
 		self.true_scaler = MinMaxScaler()
 		self.true_prices = np.squeeze(self.true_scaler.fit_transform(np.expand_dims(self.true_prices,axis=-1)))
-
-		# save true price training scaler
-		with open(f"/content/drive/My Drive/Battery-RL/train_true_scaler.pkl", "wb") as scaler_store:
-			dump(self.true_scaler, scaler_store)
 
 		# self.ep_prices.append(self._get_da_prices(self.input_prices['X_train'][1]).numpy())
 		# self.ep_prices = np.concatenate(self.ep_prices)
@@ -141,7 +137,7 @@ class Battery(gym.Env):
 		input_seq = np.expand_dims(input_seq, axis=0)
 		input_seq = np.moveaxis(input_seq, -1, 1)
 		input_seq = torch.tensor(input_seq, dtype=torch.float64)
-		input_seq = input_seq.cuda()
+		input_seq = input_seq
 
 		with torch.no_grad(): 
 			predictions = self.model(input_seq.float())

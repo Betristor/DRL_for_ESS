@@ -50,7 +50,7 @@ def main():
 	inputs = torch.tensor(inputs, dtype=torch.float64)
 	y_true = torch.tensor(y_true, dtype=torch.float64)
 
-	# inputs, y_true = inputs.cuda(), y_true.cuda()
+	# inputs, y_true = inputs, y_true
 
 	# print(train_set['X_train'].shape)
 	# print(inputs.shape)

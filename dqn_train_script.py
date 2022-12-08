@@ -11,9 +11,9 @@ sys.path.append('./models')
 sys.path.append('../models') 
 
 # import custom classes:
-from da_electricity_price_model import LSTMCNNModel
+from src.da_electricity_price_model import LSTMCNNModel
 from src.battery.battery_efficiency import BatteryEfficiency
-from battery_environment import Battery
+from src.battery_environment import Battery
 from src.models.dqn_vanilla import DQN_Agent
 from src.models.dqn_double_dueling import DQN_Agent_double_duel
 
@@ -29,10 +29,10 @@ env_settings = {
     'standby_loss': 0.99,		# standby loss for battery when idle
     'num_episodes': 1000,		# number of episodes 
     'train': True,				# Boolean to determine whether train or test state
-    'scaler_transform_path': '../data/processed_data/da_price_scaler.pkl',				
-    'train_data_path': '../data/processed_data/train_data_336hr_in_24hr_out_unshuffled.pkl', # Path to trian data
-    'test_data_path': '../data/processed_data/test_data_336hr_in_24hr_out_unshuffled.pkl',	 # Path to test data
-    'torch_model': '/content/drive/My Drive/Battery-RL/Models/da_price_prediction.pt',	 # relevant to current file dir
+    'scaler_transform_path': '/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/da_price_scaler.pkl',				
+    'train_data_path': '/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/train_data.pkl', # Path to trian data
+    'test_data_path': '/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/test_data.pkl',	 # Path to test data
+    'torch_model': '/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/models/da_price_prediction.pt',	 # relevant to current file dir
     'price_track': 'true' # 'true' or 'forecasted'
 }
 
@@ -46,7 +46,7 @@ dqn_model_profits = {}
 for model in dqn_models: # loop for each model type
 
 	# episode + time range parameters
-	n_episodes = 12000 # max 67925
+	n_episodes = 5000 # max 67925
 	time_range = 168
 
 	# e-greedy params
@@ -129,18 +129,8 @@ for model in dqn_models: # loop for each model type
 	dqn_model_profits[model] = cumlative_profit
 
 	# save model + results from trained DQN model 
-	torch.save(dqn_agent.qnet.state_dict(),f'/content/drive/My Drive/Battery-RL/trained_models/dqn_{model}.pth')
+	torch.save(dqn_agent.qnet.state_dict(), f'/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/models/dqn_{model}.pth')
 
-	with open(f"/content/drive/My Drive/Battery-RL/rewards/rewards_{model}.pkl", "wb") as episode_rewards:
+	with open(f"/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/results/rewards/rewards_{model}.pkl", "wb") as episode_rewards:
 		dump(scores, episode_rewards)
 
-# save timeseries performance df via pickle
-with open('/content/drive/My Drive/Battery-RL/rewards/profits.pkl', 'wb') as timeseries_results:
-	dump(dqn_model_profits, timeseries_results)
-
-# plot profit comparison
-for idx, model in enumerate(dqn_models):
-	plt.plot(dqn_model_profits[model], label=f'{model}')
-
-plt.legend(loc="lower right")
-plt.show()

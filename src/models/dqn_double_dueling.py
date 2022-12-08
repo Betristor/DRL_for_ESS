@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 from collections import namedtuple, deque 
-from noise_linear import NoisyLinear
+from src.models.noise_linear import NoisyLinear
 import random
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -127,11 +127,11 @@ class Replay():
 		""" randomly sample experiences from memory """
 		experiences = random.sample(self.memory, k=self.batch_size)
       
-		states = torch.from_numpy(np.vstack([e.state for e in experiences if e is not None])).float().cuda()
-		actions = torch.from_numpy(np.vstack([e.action for e in experiences if e is not None])).long().cuda()
-		rewards = torch.from_numpy(np.vstack([e.reward for e in experiences if e is not None])).float().cuda()
-		next_states = torch.from_numpy(np.vstack([e.next_state for e in experiences if e is not None])).float().cuda()
-		dones = torch.from_numpy(np.vstack([e.done for e in experiences if e is not None]).astype(np.uint8)).float().cuda()
+		states = torch.from_numpy(np.vstack([e.state for e in experiences if e is not None])).float()
+		actions = torch.from_numpy(np.vstack([e.action for e in experiences if e is not None])).long()
+		rewards = torch.from_numpy(np.vstack([e.reward for e in experiences if e is not None])).float()
+		next_states = torch.from_numpy(np.vstack([e.next_state for e in experiences if e is not None])).float()
+		dones = torch.from_numpy(np.vstack([e.done for e in experiences if e is not None]).astype(np.uint8)).float()
 
 		return (states,actions,rewards,next_states,dones)
 
@@ -148,11 +148,11 @@ class DQN_Agent_double_duel():
 
 		# Intialise q-networks
 		if self.qnet_type == 'double_dueling':
-			self.qnet = QNet(state_size, action_size, seed).cuda()
-			self.qnet_target = QNet(state_size, action_size, seed).cuda()
+			self.qnet = QNet(state_size, action_size, seed)
+			self.qnet_target = QNet(state_size, action_size, seed)
 		if self.qnet_type == 'double_dueling_NN':
-			self.qnet = NNQNet(state_size, action_size, seed).cuda()
-			self.qnet_target = NNQNet(state_size, action_size, seed).cuda()
+			self.qnet = NNQNet(state_size, action_size, seed)
+			self.qnet_target = NNQNet(state_size, action_size, seed)
 
 		# define optimiser
 		self.optimizer = optim.Adam(self.qnet.parameters(), lr=learning_rate)
@@ -182,7 +182,7 @@ class DQN_Agent_double_duel():
 
 	def action(self, state, epsilion = 0):
 		""" return action for given state given current policy """
-		state = torch.from_numpy(state).float().unsqueeze(0).cuda()
+		state = torch.from_numpy(state).float().unsqueeze(0)
 		self.qnet.eval()
 
 		with torch.no_grad():
@@ -217,7 +217,7 @@ class DQN_Agent_double_duel():
  
 		labels = rewards + (gamma * qsa_prime_targets*(1-dones))
 
-		loss = criterion(qsa, labels).cuda()
+		loss = criterion(qsa, labels)
 
 		self.optimizer.zero_grad()
 		loss.backward()
