@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import numpy as np
 
 from pickle import load
-import matplotlib.pyplot as pl
+import matplotlib.pyplot as plt
 
 
 # check for gpu compatibility
@@ -36,7 +36,7 @@ class LSTMCNNModel(nn.Module):
 def main():
 
 	#load training data dictionary
-	train_set_load = open("../data/processed_data/train_data_336hr_in_24hr_out_2018_2019.pkl", "rb") 
+	train_set_load = open("/data/processed_data/train_data_336hr_in_24hr_out_2018_2019.pkl", "rb") 
 	train_set = load(train_set_load)
 	train_set_load.close()
 
@@ -84,10 +84,8 @@ def main():
 
 
 	# save trained model
-	PATH = '../models/da_price_prediction_2018.pt'
+	PATH = '/models/da_price_prediction_2018.pt'
 	torch.save(model.state_dict(), PATH)
-
-
 
 	model.eval()
 	with torch.no_grad():

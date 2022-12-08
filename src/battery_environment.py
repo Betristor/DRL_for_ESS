@@ -11,8 +11,8 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 # import custom classes:
-from battery_efficiency import BatteryEfficiency
-from battery_degradation_func import calculate_degradation
+from battery.battery_efficiency import BatteryEfficiency
+from battery.battery_degradation import calculate_degradation
 
 # import model architecture from model scripts directory
 sys.path.append('../models') 

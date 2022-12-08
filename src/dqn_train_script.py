@@ -12,10 +12,10 @@ sys.path.append('../models')
 
 # import custom classes:
 from da_electricity_price_model import LSTMCNNModel
-from battery_efficiency import BatteryEfficiency
+from src.battery.battery_efficiency import BatteryEfficiency
 from battery_environment import Battery
-from dqn_vanilla import DQN_Agent
-from dqn_double_dueling import DQN_Agent_double_duel
+from src.models.dqn_vanilla import DQN_Agent
+from src.models.dqn_double_dueling import DQN_Agent_double_duel
 
 # seed random number for consistency
 seed = 100
