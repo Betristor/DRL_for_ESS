@@ -13,23 +13,24 @@ plt.figure(figsize=(12, 3))
 plt.style.use(['seaborn-whitegrid'])
 
 # load results from dqn inference testing
-cumsum_dqn = open('../../results/dqn_cumlativeprofit_results.pkl', 'rb')
+cumsum_dqn = open('/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/results/dqn_cumlativeprofit_results_forecasted_trueprices.pkl', 'rb')
 cumsum_dqn = load(cumsum_dqn)
 
 # load results from MILP
-cumsum_milp = pd.read_csv('../../results/timeseries_results_MILP.csv')
+cumsum_milp = pd.read_csv('/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/results/timeseries_results_MILP_predict.csv')
 cumsum_milp = cumsum_milp['cumlative_profit']
 
 # legend list
-legend_ls = ['Vanilla', 'Double Dueling', 'Noisy Network', 'MILP']
+legend_ls = ['DQN', 'Double Dueling', 'MILP']
 
 # colours list
-colours = ['#f8cf01','#f8a87d', '#96b2c6', '#6e6e6e']
+colours = ['#f8cf01','#f8a87d', '#96b2c6']
 # colours = ['#6e6e6e', '#457b9d', '#f79256', '#f08080']
 
 # plot cumlative profits for milp and DQN together 
 for idx, dqn_mod in enumerate(cumsum_dqn.keys()):
-	plt.plot(cumsum_dqn[dqn_mod], color=colours[idx], linewidth=1.75)
+	if dqn_mod != "NN":
+		plt.plot(cumsum_dqn[dqn_mod], color=colours[idx], linewidth=1.75)
 
 # intialise plot axis
 ax = plt.subplot()
@@ -44,8 +45,8 @@ ax.tick_params(direction="out", length=2.0)
 
 ax.tick_params(axis='y', labelsize= 8)
 ax.tick_params(axis='x', labelsize= 8)
-ax.set_ylabel('Profit (£)', fontsize=9, style='italic', weight='bold')
-ax.set_xlabel('Hour', fontsize=9, style='italic', weight='bold')
+ax.set_ylabel('Profit($)', fontsize=9)
+ax.set_xlabel('Hour', fontsize=9)
 ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
 ax.grid(alpha=0.3)
 
@@ -65,6 +66,7 @@ frame.set_edgecolor('white')
 # add milp to plot
 plt.plot(cumsum_milp, color = colours[-1], linewidth=1.75)
 plt.legend(legend_ls, fontsize=8)
+plt.title("Cumlative Profit Comparison", fontsize=10)
 
 plt.savefig('cumlative_profit_comparison.png', bbox_inches='tight', transparent=True, dpi=300)
 plt.show()

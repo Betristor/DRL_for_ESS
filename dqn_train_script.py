@@ -29,9 +29,9 @@ env_settings = {
     'standby_loss': 0.99,		# standby loss for battery when idle
     'num_episodes': 1000,		# number of episodes 
     'train': True,				# Boolean to determine whether train or test state
-    'scaler_transform_path': '/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/da_price_scaler.pkl',				
-    'train_data_path': '/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/train_data.pkl', # Path to trian data
-    'test_data_path': '/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/test_data.pkl',	 # Path to test data
+    'scaler_transform_path': '/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/da_forecast_price_scaler.pkl',				
+    'train_data_path': '/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/train_forecasted_data.pkl', # Path to trian data
+    'test_data_path': '/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/test_forecasted_data.pkl',	 # Path to test data
     'torch_model': '/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/models/da_price_prediction.pt',	 # relevant to current file dir
     'price_track': 'true' # 'true' or 'forecasted'
 }

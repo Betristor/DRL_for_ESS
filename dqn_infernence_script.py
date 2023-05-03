@@ -1,3 +1,4 @@
+import sys
 import torch 
 import torch.nn as nn
 import torch.nn.functional as F
@@ -12,11 +13,11 @@ sys.path.append('./models')
 sys.path.append('../models') 
 
 # import custom classes:
-from da_electricity_price_model import LSTMCNNModel
-from battery.battery_efficiency import BatteryEfficiency
-from battery_environment import Battery
-from dqn_vanilla import DQN_Agent
-from dqn_double_dueling import DQN_Agent_double_duel
+from src.da_electricity_price_model import LSTMCNNModel
+from src.battery.battery_efficiency import BatteryEfficiency
+from src.battery_environment import Battery
+from src.models.dqn_vanilla import DQN_Agent
+from src.models.dqn_double_dueling import DQN_Agent_double_duel
 
 # declare environment dictionary
 env_settings = {
@@ -27,11 +28,11 @@ env_settings = {
     'standby_loss': 0.99,		# standby loss for battery when idle
     'num_episodes': 1000,		# number of episodes 
     'train': True,				# Boolean to determine whether train or test state
-    'scaler_transform_path': './Data/processed_data/da_price_scaler.pkl',				
-    'train_data_path': './Data/processed_data/train_data_336hr_in_24hr_out_unshuffled.pkl', # Path to trian data
-    'test_data_path': './Data/processed_data/test_data_336hr_in_24hr_out_unshuffled.pkl',	 # Path to test data
-    'torch_model': './Models/da_price_prediction.pt',	 # relevant to current file dir
-    'price_track': 'forecasted' # forecasted / true
+    'scaler_transform_path': './data/processed_data/da_forecast_price_scaler.pkl',				
+    'train_data_path': './data/processed_data/train_forecasted_data.pkl', # Path to trian data
+    'test_data_path': './data/processed_data/test_forecasted_data.pkl',	 # Path to test data
+    'torch_model': './models/da_price_prediction.pt',	 # relevant to current file dir
+    'price_track': 'true' # forecasted / true
 }
 
 test_size = 52 # number of weeks to run test for
@@ -68,7 +69,7 @@ for model in dqn_types:
 		print(model)
 		dqn_agent = DQN_Agent(state_size, action_size, learning_rate, buffer_size, gamma, tau, batch_size, seed, soft_update=True, qnet_type=model)        
 
-	dqn_agent.qnet.load_state_dict(torch.load(f'../../models/dqn/dqn_{model}.pth', map_location=torch.device('cpu')))
+	dqn_agent.qnet.load_state_dict(torch.load(f'/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/models/dqn_{model}.pth', map_location=torch.device('cpu')))
 
 	env = Battery(env_settings)
 
@@ -96,8 +97,8 @@ for model in dqn_types:
 
 			new_state, reward, done, info = env.step(cur_state, action, step)
 
-			actions.append(info['action_clipped'])
-			prices.append(info['price'])
+			# actions.append(info['action_clipped'])
+			# prices.append(info['price'])
 
 			total_cumlative_profit += info["ts_cost"]
 			cumlative_profit.append(cumlative_profit[-1] + info["ts_cost"])
@@ -108,8 +109,8 @@ for model in dqn_types:
 
 	dqn_model_profits[model] = cumlative_profit
 
-	# create dataframe to show timeseries performance
-	timeseries_performance[model] = pd.DataFrame({'hour': hour, 'price': prices, 'soc': socs, 'action': actions})
+	# # create dataframe to show timeseries performance
+	# timeseries_performance[model] = pd.DataFrame({'hour': hour, 'price': prices, 'soc': socs, 'action': actions})
 
 
 # plot profit comparison
@@ -119,14 +120,14 @@ for idx, model in enumerate(dqn_types):
 plt.legend(loc="lower right")
 plt.show()
 
-print(timeseries_performance.keys())
+# print(timeseries_performance.keys())
 
-# save timeseries performance df via pickle
-with open('../../results/dqn_timeseries_results_forecasted_trueprices.pkl', 'wb') as timeseries_results:
-	dump(timeseries_performance, timeseries_results)
+# # save timeseries performance df via pickle
+# with open('./results/dqn_timeseries_results_forecasted_trueprices.pkl', 'wb') as timeseries_results:
+# 	dump(timeseries_performance, timeseries_results)
 
 # save cumlative profits for each dqn model
-with open('../../results/dqn_cumlativeprofit_results_forecasted_trueprices.pkl', 'wb') as profits:
+with open('./results/dqn_cumlativeprofit_results_forecasted_trueprices.pkl', 'wb') as profits:
 	dump(dqn_model_profits, profits)
 
 

@@ -10,13 +10,13 @@ cal = California()
 
 
 # create train and test set data
-n2ex_da = pd.read_csv('/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/PGF1_2_PDRP88-APND_prices.csv', header=0)
+n2ex_da = pd.read_csv('/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/PGF1_2_PDRP88-APND_predicted_prices.csv', header=0)
 
 # convert series to datetime
 n2ex_da['utc_timestamp'] = pd.to_datetime(n2ex_da['utc_timestamp'],format='%Y/%m/%d %H:%M')
 
 # train / test reference
-data_ref = 'test'
+data_ref = 'train'
 
 # save scaler for inverse transform
 if data_ref == "train":
@@ -25,7 +25,7 @@ if data_ref == "train":
 	scaler = MinMaxScaler()
 	n2ex_da[['price']] = scaler.fit_transform(n2ex_da[['price']])
 
-	with open("/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/da_price_scaler.pkl", "wb") as scaler_store:
+	with open("/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/da_forecast_price_scaler.pkl", "wb") as scaler_store:
 		dump(scaler, scaler_store)
 
 else: # load scaler
@@ -140,8 +140,8 @@ train_data, test_data = input_output(ts[2:], times_data[2:], dates[2:], input_se
 
 
 # save data
-with open("/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/train_data.pkl", "wb") as trainset:
+with open("/Users/yuhengzhang/Documents/博一上/Foundations of RL/Project/DRL_for_ESS/data/processed_data/train_forecasted_data.pkl", "wb") as trainset:
 	dump(train_data, trainset)
 
-with open("./data/processed_data/test_data.pkl", "wb") as testset:
+with open("./data/processed_data/test_forecasted_data.pkl", "wb") as testset:
 	dump(test_data, testset)
