@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from pyomo.environ import Var
 from src.MILP.BatteryMILP import BatteryMILP
 
-price_data = pd.read_csv("data/PGF1_2_PDRP88-APND_prices.csv")
+price_data = pd.read_csv("./data/PGF1_2_PDRP88-APND_predicted_prices.csv")
 
 # declare battery config
 battery_power = 10  # MW
@@ -69,7 +69,7 @@ for day_idx in range(0, len(price_data), 168):
 df["cumlative_profit"] = df["profit_timeseries"].cumsum()
 
 # save profits for runtime duration (for comparison with DQN models)
-df.to_csv("results/timeseries_results_MILP.csv")
+df.to_csv("results/timeseries_results_MILP_predict.csv")
 
 plt.plot(df["cumlative_profit"].values)
 plt.show()
